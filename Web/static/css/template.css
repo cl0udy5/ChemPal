@@ -1,0 +1,188 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: #333;
+}
+
+h1{
+    margin-bottom: 0;
+}
+
+h2{
+    margin-top: 0;
+    color: white;
+    font-size: 1vw;
+}
+
+.container {
+    max-width: 95%;
+    /* max-width: 600px; */
+    margin: 20px auto;
+    padding: 20px 10px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.20);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.2px);
+    -webkit-backdrop-filter: blur(1.2px);
+    border: 1px solid rgba(255, 255, 255, 0.19);
+}
+
+
+
+input, button {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 8px;
+}
+
+button {
+    /* background: linear-gradient(to left, #6a11cb, #2575FC); */
+    background-color: #2E61B5;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: linear-gradient(to right, #6a11cb, #2575FC);
+}
+
+.results {
+    text-align: left;
+    margin-top: 20px;
+    padding: 0;
+}
+
+.result {
+    background: rgba(255, 255, 255, 0.59);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(2.9px);
+    -webkit-backdrop-filter: blur(2.9px);
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    padding: 20px; /* Padding for content inside the box */
+    transform: translateX(-100%);
+    animation: slideInInitial 0.5s forwards;
+    margin-bottom: 10px;
+}
+
+.inline-flex {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.inline-flex p, .inline-flex span {
+    margin-right: 25%;
+    white-space: nowrap;
+}
+
+  
+.result:nth-child(2) {
+    animation: slideInAdjusted 0.75s forwards;
+}
+
+.result:nth-child(3) {
+    animation: slideInMatrix 1s forwards;
+}
+
+.result:nth-child(4) {
+    animation: slideInBalanced 1.25s forwards;
+}
+
+.result:nth-child(5) {
+    animation: slideInBalanced 1.5s forwards;
+}
+
+.result:nth-child(6) {
+    animation: slideInBalanced 1.75s forwards;
+}
+
+.result:nth-child(7) {
+    animation: slideInBalanced 2s forwards;
+}
+
+.result:nth-child(8) {
+    animation: slideInBalanced 2.25s forwards;
+}
+
+.result:nth-child(9) {
+    animation: slideInBalanced 2.5s forwards;
+}
+
+@keyframes slideInInitial {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideInAdjusted {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideInMatrix {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideInBalanced {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+.matrix .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 5px;
+    justify-content: center;
+    text-align: center;
+}
+
+.matrix span {
+    padding: 5px 10px;
+    background: #eef;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: block;
+}
+
+@media screen and (max-width: 600px) {
+    .container {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+.fancy {
+    @supports (background-clip: text) or (-webkit-background-clip: text) {
+        /* background-image: 
+            url("img/background_for_text.gif"); */
+        background-color: rgba(255, 255, 255, 1);
+        background-size: 110% auto;
+        background-position: center;
+        color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+        text-align: center;
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        font-style: normal;
+        font-size: 8vw;   
+        padding-bottom: 1px;
+    }
+  }
+  /* @font-face {
+    font-family: 'MyCustomFont';
+    src: url('fonts/MyCustomFont.woff2') format('woff2'),
+         url('fonts/MyCustomFont.woff') format('woff'),
+         url('fonts/MyCustomFont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+} */
