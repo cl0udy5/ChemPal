@@ -195,7 +195,6 @@ def extract_final_equations(variables: list, solved_matrix: list) -> list:
 
 def final_solution(s: str) -> list:
     output['equation'] = s
-    print(f'Equation: {s}')
     s = s.replace(' ', '')
     m = list(s.split('='))
     reactants = m[0].split('+')
@@ -208,79 +207,50 @@ def final_solution(s: str) -> list:
     #     elements_products.append(chemparse.parse_formula(i))
     elements_reactants = [chemparse.parse_formula(i) for i in reactants]
     elements_products = [chemparse.parse_formula(i) for i in products]
-    print()
-    print('Elements in reactants:', *elements_reactants)
     output['elements_reactants'] = elements_reactants
-
-    print('Elements in products:', *elements_products)
     output['elements_products'] = elements_reactants
-    print()
 
     variables = [chr(i) for i in range(97, 97 + len(reactants) + len(products))]
     equations = get_eq(elements_reactants, elements_products, reactants, products, variables)
-    print('Initial equations:', equations)
     a = equations
     output['variables'] = variables
 
     output['initial_equations'] = a
 
     adjusted_equations = adjust_eq_new(copy.deepcopy(equations), variables)
-    print('Adjusted equations: ', adjusted_equations)
 
     output['adjusted_equations'] = adjusted_equations
-    print()
     final_matrix = create_matrix_new(variables, adjusted_equations)
-    print(*final_matrix, sep='\n')
 
     output['coefficient_matrix'] = convert_matrix_to_fractions(final_matrix)
 
-    print()
-
     final_matrix = adjust_matrix(final_matrix)
-    print(*final_matrix, sep='\n')
 
     output['coefficient_adjusted_matrix'] = convert_matrix_to_fractions(final_matrix)
 
-    print()
-    
     solved_matrix = solve(final_matrix)
-    print(*solved_matrix, sep='\n')
 
     output['solved_matrix'] = convert_matrix_to_fractions(solved_matrix)
-
-    print()
     
     list_of_coefficients = extract_final_equations(variables, solved_matrix)
     
     output['balanced_coefficients'] = ', '.join(f'{variables[i].upper()}: {int(list_of_coefficients[i])}' for i in range(len(list_of_coefficients)))
     molecules = reactants
     j = 0
-    print()
-    print('Equation: ', end='')
-    print(*reactants, sep=' + ', end=' = ')
-    print(*products, sep=' + ')
-    print('Balanced equation: ', end='')
     answer = ''
     for i in list_of_coefficients:
         if i != 1:
-            print(int(i),molecules[j], sep='', end=' ')
             answer += str(int(i)) + molecules[j] + ' '
         else:
-            print(molecules[j], sep='', end=' ')
             answer += molecules[j] + ' '
         j += 1
         if j == len(molecules):
             if molecules == reactants:
                 molecules = products
-                print('=', end=' ')
                 answer += '= '
             j = 0
         else:
-            print('+', end=' ')
             answer += '+ '
-    print()
-    print('-' * 80)
-    print()
     # output.append(answer)
     output['answer'] = answer
     return(output)
