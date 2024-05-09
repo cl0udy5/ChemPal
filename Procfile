@@ -1,1 +1,0 @@
-web: gunicorn Web.hello:app
