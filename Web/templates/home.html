@@ -35,7 +35,7 @@
                 {% endfor %}
             </div>
             <div class="result matrix">
-                <strong>Create the coefficient matrix with las column equal to "{{data.variables[-1]}}"(We assume that "{{data.variables[-1]}}" is 1):</strong>
+                <strong>Create the coefficient matrix with last column equal to "{{data.variables[-1]}}"(We assume that "{{data.variables[-1]}}" is 1):</strong>
                 {% for row in data.coefficient_matrix %}
                     <div class="row">
                         {% for item in row %}
@@ -79,5 +79,5 @@
         </div>
         {% endif %}
     </div> 
-</body>
+</body>      
 </html>
