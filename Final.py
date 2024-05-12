@@ -4,6 +4,7 @@ import math
 import copy
 
 output = {
+    'correct_input': True,
     'equation': '',
     'elements_reactants': [],
     'elements_products': [],
@@ -15,6 +16,52 @@ output = {
     'balanced_coefficients': '',
     'answer': ''
 }
+
+def custom_parse(mol: str) -> dict:
+    elements = {}
+    name = ''
+    amount = 1
+    multiplier = 1
+    for i in range(len(mol)):
+        if mol[i].isupper():
+            if name != '':
+                if name in elements:
+                    elements[name] += amount * multiplier
+                else:
+                    elements[name] = amount * multiplier
+            name = mol[i]
+            amount = 1
+        if mol[i].islower():
+            name += mol[i]
+        if mol[i].isdigit():
+            if i == 0:
+                multiplier = int(mol[i])
+            else:
+                amount = int(mol[i])
+        if mol[i] == '(':
+            if name in elements:
+                elements[name] += amount * multiplier
+            else:
+                elements[name] = amount * multiplier
+            multiplier *= int(mol[mol.find(')') + 1])
+            name = ''
+            amount = 1
+        if mol[i] == ')':
+            if name in elements:
+                elements[name] += amount * multiplier
+            else:
+                elements[name] = amount * multiplier
+            multiplier //= int(mol[i + 1])
+            name = ''
+            amount = 1
+    if name in elements:
+        elements[name] += amount * multiplier
+    else:
+        elements[name] = amount * multiplier
+    name = ''
+    amount = 1
+    multiplier = 1
+    return elements
 
 def multiply_row(final_matrix: list, a,b,row,column : int) -> list:
     for i in range(len(final_matrix[column])):
@@ -177,9 +224,7 @@ def extract_final_equations(variables: list, solved_matrix: list) -> list:
         for j in range(len(solved_matrix[0]) - 2, i, -1):
             v += solved_matrix[i][j] * -1 * ans[j - 1]
         ans.append(v)
-    print()
     ans.reverse()
-    print(ans)
     ans_ratio = []
     multiplier = 1
     for value in ans:
@@ -206,8 +251,8 @@ def final_solution(s: str) -> list:
     #     elements_reactants.append(chemparse.parse_formula(i))
     # for i in products:
     #     elements_products.append(chemparse.parse_formula(i))
-    elements_reactants = [chemparse.parse_formula(i) for i in reactants]
-    elements_products = [chemparse.parse_formula(i) for i in products]
+    elements_reactants = [custom_parse(i) for i in reactants]
+    elements_products = [custom_parse(i) for i in products]
     output['elements_reactants'] = elements_reactants
     output['elements_products'] = elements_reactants
 
