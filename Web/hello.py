@@ -1,9 +1,8 @@
 from flask import Flask, render_template, request
 import sys
-sys.path.append('/ChemPal-v0.1')
+sys.path.append('/ChemPal')
 # from functions_testing import make_a_list 
 from Final import final_solution
-
 
 app = Flask(__name__)
 
@@ -22,4 +21,4 @@ def home():
 
 
 if __name__ =='__main__':
-    app.run(debug=False)
+    app.run(debug=False, host='0.0.0.0')

@@ -5,6 +5,7 @@ import copy
 
 output = {
     'correct_input': True,
+    'initial_check': True,
     'equation': '',
     'elements_reactants': [],
     'elements_products': [],
@@ -54,10 +55,11 @@ def custom_parse(mol: str) -> dict:
             multiplier //= int(mol[i + 1])
             name = ''
             amount = 1
-    if name in elements:
-        elements[name] += amount * multiplier
-    else:
-        elements[name] = amount * multiplier
+    if name != '':
+        if name in elements:
+            elements[name] += amount * multiplier
+        else:
+            elements[name] = amount * multiplier
     name = ''
     amount = 1
     multiplier = 1
@@ -88,7 +90,8 @@ def solve(final_matrix: list) -> list:
     for row in range(len(final_matrix)):
         denominator = final_matrix[row][row]
         for column in range(len(final_matrix) + 1):
-            final_matrix[row][column] /= denominator
+            if denominator != 0:
+                final_matrix[row][column] /= denominator
     return final_matrix
 
 def get_eq(elements_reactants, elements_products: dict, reactants: list, products: list, variables:list) -> dict:
@@ -140,7 +143,7 @@ def list_of_rows_in_order(lines: dict, s: str, key, index_of_value: int) -> str:
 
 def adjust_matrix(x: list) -> list:
     apr_lines = {}
-    for i in range(len(x[0]) - 1):
+    for i in range(len(x)):
         for j in range(len(x)):
             if x[j][i] != 0:
                 if i in apr_lines:
@@ -255,50 +258,72 @@ def final_solution(s: str) -> list:
     elements_products = [custom_parse(i) for i in products]
     output['elements_reactants'] = elements_reactants
     output['elements_products'] = elements_reactants
+    output['initial_check'] = True
+    total_elements_reactants= {}
+    total_elements_products = {}
 
-    variables = [chr(i) for i in range(97, 97 + len(reactants) + len(products))]
-    equations = get_eq(elements_reactants, elements_products, reactants, products, variables)
-    a = equations
-    output['variables'] = variables
+    for i in elements_reactants:
+        for j in i:
+            if j in total_elements_reactants:
+                total_elements_reactants[j] += i[j]
+            else:
+                total_elements_reactants[j] = i[j]
 
-    output['initial_equations'] = a
+    for i in elements_products:
+        for j in i:
+            if j in total_elements_products:
+                total_elements_products[j] += i[j]
+            else:
+                total_elements_products[j] = i[j]
 
-    adjusted_equations = adjust_eq_new(copy.deepcopy(equations), variables)
+    for i in total_elements_products:
+        if total_elements_products[i] != total_elements_reactants[i]:
+            output['initial_check'] = False
 
-    output['adjusted_equations'] = adjusted_equations
-    final_matrix = create_matrix_new(variables, adjusted_equations)
+    if not output['initial_check']:   
+        variables = [chr(i) for i in range(97, 97 + len(reactants) + len(products))]
+        equations = get_eq(elements_reactants, elements_products, reactants, products, variables)
+        a = equations
+        output['variables'] = variables
 
-    output['coefficient_matrix'] = convert_matrix_to_fractions(final_matrix)
+        output['initial_equations'] = a
 
-    final_matrix = adjust_matrix(final_matrix)
+        adjusted_equations = adjust_eq_new(copy.deepcopy(equations), variables)
 
-    output['coefficient_adjusted_matrix'] = convert_matrix_to_fractions(final_matrix)
+        output['adjusted_equations'] = adjusted_equations
+        final_matrix = create_matrix_new(variables, adjusted_equations)
 
-    solved_matrix = solve(final_matrix)
+        output['coefficient_matrix'] = convert_matrix_to_fractions(final_matrix)
 
-    output['solved_matrix'] = convert_matrix_to_fractions(solved_matrix)
-    
-    list_of_coefficients = extract_final_equations(variables, solved_matrix)
-    
-    output['balanced_coefficients'] = ', '.join(f'{variables[i].upper()}: {int(list_of_coefficients[i])}' for i in range(len(list_of_coefficients)))
-    molecules = reactants
-    j = 0
-    answer = ''
-    for i in list_of_coefficients:
-        if i != 1:
-            answer += str(int(i)) + molecules[j] + ' '
-        else:
-            answer += molecules[j] + ' '
-        j += 1
-        if j == len(molecules):
-            if molecules == reactants:
-                molecules = products
-                answer += '= '
-            j = 0
-        else:
-            answer += '+ '
-    # output.append(answer)
-    output['answer'] = answer
+        final_matrix = adjust_matrix(final_matrix)
+
+        output['coefficient_adjusted_matrix'] = convert_matrix_to_fractions(final_matrix)
+
+        solved_matrix = solve(final_matrix)
+
+        output['solved_matrix'] = convert_matrix_to_fractions(solved_matrix)
+        
+        list_of_coefficients = extract_final_equations(variables, solved_matrix)
+        
+        output['balanced_coefficients'] = ', '.join(f'{variables[i].upper()}: {int(list_of_coefficients[i])}' for i in range(len(list_of_coefficients)))
+        molecules = reactants
+        j = 0
+        answer = ''
+        for i in list_of_coefficients:
+            if i != 1:
+                answer += str(int(i)) + molecules[j] + ' '
+            else:
+                answer += molecules[j] + ' '
+            j += 1
+            if j == len(molecules):
+                if molecules == reactants:
+                    molecules = products
+                    answer += '= '
+                j = 0
+            else:
+                answer += '+ '
+        # output.append(answer)
+        output['answer'] = answer
     return(output)
 
 

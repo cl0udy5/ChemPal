@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/css/template.css" media="none" onload="if(media!='all')media='all'">
-    <script src="static/js/app.js" async></script>
     <title>ChemPal</title>
 </head>
-<body>     
+<body>
     <div class="container">
         <h1><span class="fancy">ChemPal</span></h1>
         <h2>Balancing chemical equations since 2024</h2>
@@ -17,67 +16,77 @@
         </form>
 
         {% if data %}
-        <div class="results" aria-live="polite">
-            <div class="result">
-                <strong>The solution for:</strong>
-                    <p>{{ data.equation }}</p>
-            </div>
-            <div class="result">
-                <strong>Create equations with each variable corresponding with a molecule:</strong>
-                {% for key, value in data.initial_equations.items() %}
-                    <p>{{ key }}: {{ value }}</p>
-                {% endfor %}
-            </div>
-            <div class="result">
-                <strong>Adjust equations so that "{{data.variables[-1]}}" would be on the right:</strong>
-                {% for key, value in data.adjusted_equations.items() %}
-                    <p>{{ key }}: {{ value }}</p>
-                {% endfor %}
-            </div>
-            <div class="result matrix">
-                <strong>Create the coefficient matrix with last column equal to "{{data.variables[-1]}}"(We assume that "{{data.variables[-1]}}" is 1):</strong>
-                {% for row in data.coefficient_matrix %}
-                    <div class="row">
-                        {% for item in row %}
-                            <span>{{ item }}</span>
+            <div class="results" aria-live="polite">
+                {% if data.initial_check == true %}
+                    <div class="result">
+                        <strong>The solution for:</strong>
+                        <p>{{ data.equation }}</p>
+                    </div>
+                    <div class="result">
+                        <strong>The equation is balanced</strong>
+                    </div>
+                {% else %}
+                    <div class="result">
+                        <strong>The solution for:</strong>
+                        <p>{{ data.equation }}</p>
+                    </div>
+                    <div class="result">
+                        <strong>Create equations with each variable corresponding with a molecule:</strong>
+                        {% for key, value in data.initial_equations.items() %}
+                            <p>{{ key }}: {{ value }}</p>
                         {% endfor %}
                     </div>
-                {% endfor %}
-            </div>
-            <div class="result matrix">
-                <strong>Rearranged matrix with numbers on the diagonal not equal to 0:</strong>
-                {% for row in data.coefficient_adjusted_matrix %}
-                    <div class="row">
-                        {% for item in row %}
-                            <span>{{ item }}</span>
+                    <div class="result">
+                        <strong>Adjust equations so that "{{data.variables[-1]}}" would be on the right:</strong>
+                        {% for key, value in data.adjusted_equations.items() %}
+                            <p>{{ key }}: {{ value }}</p>
                         {% endfor %}
                     </div>
-                {% endfor %}
-            </div>
-            <div class="result matrix">
-                <strong>Matrix solved using gaussian elimination:</strong>
-                {% for row in data.solved_matrix %}
-                    <div class="row">
-                        {% for item in row %}
-                            <span>{{ item }}</span>
+                    <div class="result matrix">
+                        <strong>Create the coefficient matrix with last column equal to "{{data.variables[-1]}}" (We assume that "{{data.variables[-1]}}" is 1):</strong>
+                        {% for row in data.coefficient_matrix %}
+                            <div class="row">
+                                {% for item in row %}
+                                    <span>{{ item }}</span>
+                                {% endfor %}
+                            </div>
                         {% endfor %}
                     </div>
-                {% endfor %}
+                    <div class="result matrix">
+                        <strong>Rearranged matrix with numbers on the diagonal not equal to 0:</strong>
+                        {% for row in data.coefficient_adjusted_matrix %}
+                            <div class="row">
+                                {% for item in row %}
+                                    <span>{{ item }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="result matrix">
+                        <strong>Matrix solved using Gaussian elimination:</strong>
+                        {% for row in data.solved_matrix %}
+                            <div class="row">
+                                {% for item in row %}
+                                    <span>{{ item }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="result">
+                        <strong>All the coefficients if "{{data.variables[-1]}}" equals to 1:</strong>
+                        <p>{{ data.unbalanced_coefficients }}</p>
+                    </div>
+                    <div class="result">
+                        <strong>Balanced:</strong>
+                        <p>{{ data.balanced_coefficients }}</p>
+                    </div>
+                    <div class="result">
+                        <strong>Answer:</strong>
+                        <p>{{ data.answer }}</p>
+                    </div>
+                {% endif %}
             </div>
-            <div class="result">
-                <strong>All the coefficients if "{{data.variables[-1]}}" equals to 1:</strong>
-                <p>{{ data.unbalanced_coefficients }}</p>
-            </div>
-            <div class="result">
-                <strong>Balanced:</strong>
-                <p>{{ data.balanced_coefficients }}</p>
-            </div>
-            <div class="result">
-                <strong>Answer:</strong>
-                <p>{{ data.answer }}</p>
-            </div>
-        </div>
         {% endif %}
-    </div> 
-</body>      
+    </div>
+</body>
 </html>
