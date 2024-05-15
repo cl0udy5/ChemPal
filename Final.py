@@ -6,6 +6,7 @@ import copy
 output = {
     'correct_input': True,
     'initial_check': True,
+    'is_combustion': False,
     'equation': '',
     'elements_reactants': [],
     'elements_products': [],
@@ -18,51 +19,93 @@ output = {
     'answer': ''
 }
 
+def Combustion_percentage(answer, products):
+    global output
+    answer_sep = answer.replace(' ', '')
+    m = list(answer_sep.split('='))
+    reactants_balanced = m[0].split('+')
+    products_balanced = m[1].split('+')
+    elements_reactants = [custom_parse(i) for i in reactants_balanced]
+    elements_products = [custom_parse(i) for i in products_balanced]
+    for dict_reactant in elements_reactants:
+        if 'O' in dict_reactant:
+            O_reactant = dict_reactant['O']/2
+    if 'CO2' in products and 'H2O' in products:
+        print('This combustion is 100% complete')
+        output['is_combustion'] = True
+        output['combustion'] = 'This combustion is 100% complete'
+    elif 'H2O' in products and 'CO' in products:
+        for dict_product in elements_products:
+           if 'H' not in dict_product:
+                O_product = dict_product['O']
+        percentage =  O_reactant * 100/(O_reactant + (O_product/2))
+        print("This combustion is {:.2f} % complete".format(percentage))
+        output['is_combustion'] = True
+        output['combustion'] = "This combustion is {:.2f} % complete".format(percentage)
+    elif 'H2O' in products and 'C' in products:
+        for dict_product in elements_products:
+           if 'H' not in dict_product:
+                O_product = dict_product['C'] 
+        percentage =  O_reactant * 100/(O_reactant + O_product)
+        print("This combustion is {:.2f} % complete".format(percentage))
+        output['is_combustion'] = True
+        output['combustion'] = "This combustion is {:.2f} % complete".format(percentage)
+
 def custom_parse(mol: str) -> dict:
     elements = {}
     name = ''
-    amount = 1
-    multiplier = 1
+    amount = ''
+    multiplier = ''
     for i in range(len(mol)):
+        if mol[i].isdigit():
+            multiplier += mol[i]
+        else:
+            start = i
+            break
+    if multiplier == '':
+        multiplier = '1'
+    multiplier = int(multiplier)
+    for i in range(start, len(mol)):
         if mol[i].isupper():
             if name != '':
+                if amount == '':
+                    amount = '1'
                 if name in elements:
-                    elements[name] += amount * multiplier
+                    elements[name] += int(amount) * multiplier
                 else:
-                    elements[name] = amount * multiplier
+                    elements[name] = int(amount) * multiplier
             name = mol[i]
-            amount = 1
-        if mol[i].islower():
+            amount = ''
+        elif mol[i].islower():
             name += mol[i]
-        if mol[i].isdigit():
-            if i == 0:
-                multiplier = int(mol[i])
-            else:
-                amount = int(mol[i])
-        if mol[i] == '(':
+        elif mol[i].isdigit():
+            amount += mol[i]
+        elif mol[i] == '(':
+            if amount == '':
+                amount = '1'
             if name in elements:
-                elements[name] += amount * multiplier
+                elements[name] += int(amount) * multiplier
             else:
-                elements[name] = amount * multiplier
-            multiplier *= int(mol[mol.find(')') + 1])
+                elements[name] = int(amount) * multiplier
+            multiplier *= int(mol[mol.find(')') + 1: ])
             name = ''
-            amount = 1
-        if mol[i] == ')':
+            amount = ''
+        elif mol[i] == ')':
+            if amount == '':
+                amount = '1'
             if name in elements:
-                elements[name] += amount * multiplier
+                elements[name] += int(amount) * multiplier
             else:
-                elements[name] = amount * multiplier
-            multiplier //= int(mol[i + 1])
+                elements[name] = int(amount) * multiplier
             name = ''
-            amount = 1
+            break
     if name != '':
+        if amount == '':
+            amount = '1'
         if name in elements:
-            elements[name] += amount * multiplier
+            elements[name] += int(amount) * multiplier
         else:
-            elements[name] = amount * multiplier
-    name = ''
-    amount = 1
-    multiplier = 1
+            elements[name] = int(amount) * multiplier
     return elements
 
 def multiply_row(final_matrix: list, a,b,row,column : int) -> list:
@@ -143,7 +186,7 @@ def list_of_rows_in_order(lines: dict, s: str, key, index_of_value: int) -> str:
 
 def adjust_matrix(x: list) -> list:
     apr_lines = {}
-    for i in range(len(x)):
+    for i in range(len(x[0]) - 1):
         for j in range(len(x)):
             if x[j][i] != 0:
                 if i in apr_lines:
@@ -171,7 +214,7 @@ def adjust_eq_new(x: dict, variables: list) -> dict:
                         equations_in_func[i] += '-' + right_equation[:j + 1]
                         if j + 1 == len(right_equation):
                             right_equation = ''
-                            equations_in_func[i] += '=0*d'
+                            equations_in_func[i] += f'=0*{variables[-1]}'
                         else:
                             right_equation = right_equation[j + 2:]
                         j = 0
@@ -244,7 +287,9 @@ def extract_final_equations(variables: list, solved_matrix: list) -> list:
 
 def final_solution(s: str) -> list:
     output['equation'] = s
+    answer = s
     s = s.replace(' ', '')
+    s = s.replace('->', '=')
     m = list(s.split('='))
     reactants = m[0].split('+')
     products = m[1].split('+')
@@ -311,7 +356,17 @@ def final_solution(s: str) -> list:
         answer = ''
         for i in list_of_coefficients:
             if i != 1:
-                answer += str(int(i)) + molecules[j] + ' '
+                if molecules[j][0].isalpha():
+                    answer += str(int(i)) + molecules[j] + ' '
+                else:
+                    sub_molecule = ''
+                    for numbers in molecules[j]:
+                        if numbers.isdigit():
+                            sub_molecule += numbers
+                        else:
+                            first_letter = numbers
+                            break
+                    answer += str(int(i) * int(sub_molecule)) + molecules[j][molecules[j].find(first_letter):] + ' '
             else:
                 answer += molecules[j] + ' '
             j += 1
@@ -322,13 +377,13 @@ def final_solution(s: str) -> list:
                 j = 0
             else:
                 answer += '+ '
-        # output.append(answer)
         output['answer'] = answer
+    Combustion_percentage(answer, products)
     return(output)
 
 
 if __name__ == '__main__':
-    print(final_solution(input()))
+    print(final_solution('PhCH3 + KMnO4 + H2SO4 = PhCOOH + K2SO4 + MnSO4 + H2O'))
 
 
 

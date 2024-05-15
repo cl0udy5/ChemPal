@@ -53,7 +53,7 @@
                         {% endfor %}
                     </div>
                     <div class="result matrix">
-                        <strong>Rearranged matrix with numbers on the diagonal not equal to 0:</strong>
+                        <strong>Rearrange matrix with numbers on the diagonal not equal to 0:</strong>
                         {% for row in data.coefficient_adjusted_matrix %}
                             <div class="row">
                                 {% for item in row %}
@@ -63,7 +63,7 @@
                         {% endfor %}
                     </div>
                     <div class="result matrix">
-                        <strong>Matrix solved using Gaussian elimination:</strong>
+                        <strong>Solve the matrix using Gaussian elimination:</strong>
                         {% for row in data.solved_matrix %}
                             <div class="row">
                                 {% for item in row %}
@@ -73,7 +73,7 @@
                         {% endfor %}
                     </div>
                     <div class="result">
-                        <strong>All the coefficients if "{{data.variables[-1]}}" equals to 1:</strong>
+                        <strong>All the coefficients if "{{data.variables[-1].capitalize()}}" equals to 1:</strong>
                         <p>{{ data.unbalanced_coefficients }}</p>
                     </div>
                     <div class="result">
@@ -84,6 +84,12 @@
                         <strong>Answer:</strong>
                         <p>{{ data.answer }}</p>
                     </div>
+                    {% if data.is_combustion %}
+                    <div class="result">
+                        <strong>By the way, this reaction is a combustion!</strong>
+                        <p>{{ data.combustion }}</p>
+                    </div>
+                    {% endif %}
                 {% endif %}
             </div>
         {% endif %}

@@ -175,7 +175,7 @@ button:hover {
         font-family: "Poppins", sans-serif;
         font-weight: 700;
         font-style: normal;
-        font-size: 10vw;   
+        font-size: 8vw;   
         padding-bottom: 1px;
     }
   }
@@ -187,3 +187,12 @@ button:hover {
     font-weight: normal;
     font-style: normal;
 } */
+
+@media (max-width: 768px) {
+    h1 .fancy {
+        font-size: 2em; /* Adjust this value as needed */
+    }
+    h2 {
+        font-size: 1em;
+    }
+}
