@@ -30,11 +30,11 @@ def Combustion_percentage(answer, products):
     for dict_reactant in elements_reactants:
         if 'O' in dict_reactant:
             O_reactant = dict_reactant['O']/2
-    if 'CO2' in products and 'H2O' in products:
+    if  any('CO2' in i for i in products) and any('H2O' in j for j in products):
         print('This combustion is 100% complete')
         output['is_combustion'] = True
         output['combustion'] = 'This combustion is 100% complete'
-    elif 'H2O' in products and 'CO' in products:
+    elif any('H2O' in i for i in products) and any('CO' in j for j in products):
         for dict_product in elements_products:
            if 'H' not in dict_product:
                 O_product = dict_product['O']
@@ -42,7 +42,7 @@ def Combustion_percentage(answer, products):
         print("This combustion is {:.2f} % complete".format(percentage))
         output['is_combustion'] = True
         output['combustion'] = "This combustion is {:.2f} % complete".format(percentage)
-    elif 'H2O' in products and 'C' in products:
+    elif any('H2O' in i for i in products) and any('C' in j for j in products):
         for dict_product in elements_products:
            if 'H' not in dict_product:
                 O_product = dict_product['C'] 
@@ -268,7 +268,7 @@ def extract_final_equations(variables: list, solved_matrix: list) -> list:
     for i in range(len(solved_matrix) - 1, -1, -1):
         v = solved_matrix[i][-1]
         for j in range(len(solved_matrix[0]) - 2, i, -1):
-            v += solved_matrix[i][j] * -1 * ans[j - 1]
+            v += solved_matrix[i][j] * -1 * ans[(len(solved_matrix[0]) - j - 1)]
         ans.append(v)
     ans.reverse()
     ans_ratio = []
@@ -383,7 +383,7 @@ def final_solution(s: str) -> list:
 
 
 if __name__ == '__main__':
-    print(final_solution('PhCH3 + KMnO4 + H2SO4 = PhCOOH + K2SO4 + MnSO4 + H2O'))
+    print(final_solution('CH4 + O2 = C + 2H2O'))
 
 
 
