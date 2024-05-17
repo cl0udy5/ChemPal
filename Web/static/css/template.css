@@ -66,7 +66,7 @@ button:hover {
     backdrop-filter: blur(2.9px);
     -webkit-backdrop-filter: blur(2.9px);
     border: 1px solid rgba(255, 255, 255, 0.34);
-    padding: 20px; /* Padding for content inside the box */
+    padding: 20px;
     transform: translateX(-100%);
     animation: slideInInitial 0.5s forwards;
     margin-bottom: 10px;
@@ -188,7 +188,7 @@ button:hover {
 
 @media (max-width: 768px) {
     h1 .fancy {
-        font-size: 2em; /* Adjust this value as needed */
+        font-size: 2em;
     }
     h2 {
         font-size: 1em;

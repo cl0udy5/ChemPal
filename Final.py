@@ -51,6 +51,7 @@ def Combustion_percentage(answer, products):
         output['is_combustion'] = True
         output['combustion'] = "This combustion is {:.2f} % complete".format(percentage)
 
+
 def custom_parse(mol: str) -> dict:
     elements = {}
     name = ''
@@ -108,6 +109,7 @@ def custom_parse(mol: str) -> dict:
             elements[name] = int(amount) * multiplier
     return elements
 
+
 def multiply_row(final_matrix: list, a,b,row,column : int) -> list:
     for i in range(len(final_matrix[column])):
         final_matrix[column][i] *= b
@@ -121,6 +123,7 @@ def subtract_row(final_matrix: list, row, column, b: int) -> list:
         final_matrix[row][i] -= final_matrix[column][i]
         final_matrix[column][i] //= b
     return final_matrix
+
 
 def solve(final_matrix: list) -> list:
     for row in range(1, len(final_matrix)):
@@ -136,6 +139,7 @@ def solve(final_matrix: list) -> list:
             if denominator != 0:
                 final_matrix[row][column] /= denominator
     return final_matrix
+
 
 def get_eq(elements_reactants, elements_products: dict, reactants: list, products: list, variables:list) -> dict:
     equations = {}
@@ -155,6 +159,7 @@ def get_eq(elements_reactants, elements_products: dict, reactants: list, product
                 equations[key] += '=' + str(int(elements_products[i][key])) + f'*{variables[i + j]}'
                 checking_prodcuts.append(key)
     return equations
+
 
 def list_of_rows_in_order(lines: dict, s: str, key, index_of_value: int) -> str:
     row = str(lines[key][index_of_value])
@@ -184,6 +189,7 @@ def list_of_rows_in_order(lines: dict, s: str, key, index_of_value: int) -> str:
         else:
             return list_of_rows_in_order(lines, s, key, index_of_value + 1)
 
+
 def adjust_matrix(x: list) -> list:
     apr_lines = {}
     for i in range(len(x[0]) - 1):
@@ -197,6 +203,7 @@ def adjust_matrix(x: list) -> list:
     s = list_of_rows_in_order(apr_lines, '', 0, 0)[:len(x[0]) - 1]
     adjusted_matrix = [x[int(i)] for i in s]
     return adjusted_matrix
+
 
 def adjust_eq_new(x: dict, variables: list) -> dict:
     equations_in_func = x
@@ -222,8 +229,10 @@ def adjust_eq_new(x: dict, variables: list) -> dict:
                     j += 1
     return equations_in_func
 
+
 def lcm(a, b: int) -> int:
     return (a * b) // math.gcd(a, b)
+
 
 def create_matrix_new(variables: list, equations: dict) -> list:
     x = []
@@ -252,6 +261,7 @@ def create_matrix_new(variables: list, equations: dict) -> list:
         sub_x = []
         j = 0
     return x
+
 
 def convert_matrix_to_fractions(matrix):
     fraction_matrix = []
@@ -285,7 +295,8 @@ def extract_final_equations(variables: list, solved_matrix: list) -> list:
     return ans
 
 
-def final_solution(s: str) -> list:
+def final_solution(s: str) -> dict:
+    global output
     output['equation'] = s
     answer = s
     s = s.replace(' ', '')
@@ -306,7 +317,6 @@ def final_solution(s: str) -> list:
     output['initial_check'] = True
     total_elements_reactants= {}
     total_elements_products = {}
-
     for i in elements_reactants:
         for j in i:
             if j in total_elements_reactants:
