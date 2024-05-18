@@ -14,84 +14,89 @@
             <input type="text" name="text" placeholder="Enter your chemical equation" required>
             <button type="submit">Balance</button>
         </form>
-
         {% if data %}
-            <div class="results" aria-live="polite">
-                {% if data.initial_check == true %}
+            {% if data.correct_input %}
+                <div class="results" aria-live="polite">
+                    {% if data.initial_check == true %}
+                        <div class="result">
+                            <strong>The solution for:</strong>
+                            <p>{{ data.equation }}</p>
+                        </div>
+                        <div class="result">
+                            <strong>The equation is balanced</strong>
+                        </div>
+                    {% else %}
+                        <div class="result">
+                            <strong>The solution for:</strong>
+                            <p>{{ data.equation }}</p>
+                        </div>
+                        <div class="result">
+                            <strong>Create equations with each variable corresponding with a molecule:</strong>
+                            {% for key, value in data.initial_equations.items() %}
+                                <p>{{ key }}: {{ value }}</p>
+                            {% endfor %}
+                        </div>
+                        <div class="result">
+                            <strong>Adjust equations so that "{{data.variables[-1]}}" would be on the right:</strong>
+                            {% for key, value in data.adjusted_equations.items() %}
+                                <p>{{ key }}: {{ value }}</p>
+                            {% endfor %}
+                        </div>
+                        <div class="result matrix">
+                            <strong>Create the coefficient matrix with last column equal to "{{data.variables[-1]}}" (We assume that "{{data.variables[-1]}}" is 1):</strong>
+                            {% for row in data.coefficient_matrix %}
+                                <div class="row">
+                                    {% for item in row %}
+                                        <span>{{ item }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="result matrix">
+                            <strong>Rearrange matrix with numbers on the diagonal not equal to 0:</strong>
+                            {% for row in data.coefficient_adjusted_matrix %}
+                                <div class="row">
+                                    {% for item in row %}
+                                        <span>{{ item }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="result matrix">
+                            <strong>Solve the matrix using Gaussian elimination:</strong>
+                            {% for row in data.solved_matrix %}
+                                <div class="row">
+                                    {% for item in row %}
+                                        <span>{{ item }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="result">
+                            <strong>All the coefficients if "{{data.variables[-1].capitalize()}}" equals to 1:</strong>
+                            <p>{{ data.unbalanced_coefficients }}</p>
+                        </div>
+                        <div class="result">
+                            <strong>Balanced:</strong>
+                            <p>{{ data.balanced_coefficients }}</p>
+                        </div>
+                        <div class="result">
+                            <strong>Answer:</strong>
+                            <p>{{ data.answer }}</p>
+                        </div>
+                    {% endif %}
+                    {% if data.is_combustion %}
                     <div class="result">
-                        <strong>The solution for:</strong>
-                        <p>{{ data.equation }}</p>
+                        <strong>By the way, this reaction is a combustion!</strong>
+                        <p>{{ data.combustion }}</p>
                     </div>
-                    <div class="result">
-                        <strong>The equation is balanced</strong>
-                    </div>
-                {% else %}
-                    <div class="result">
-                        <strong>The solution for:</strong>
-                        <p>{{ data.equation }}</p>
-                    </div>
-                    <div class="result">
-                        <strong>Create equations with each variable corresponding with a molecule:</strong>
-                        {% for key, value in data.initial_equations.items() %}
-                            <p>{{ key }}: {{ value }}</p>
-                        {% endfor %}
-                    </div>
-                    <div class="result">
-                        <strong>Adjust equations so that "{{data.variables[-1]}}" would be on the right:</strong>
-                        {% for key, value in data.adjusted_equations.items() %}
-                            <p>{{ key }}: {{ value }}</p>
-                        {% endfor %}
-                    </div>
-                    <div class="result matrix">
-                        <strong>Create the coefficient matrix with last column equal to "{{data.variables[-1]}}" (We assume that "{{data.variables[-1]}}" is 1):</strong>
-                        {% for row in data.coefficient_matrix %}
-                            <div class="row">
-                                {% for item in row %}
-                                    <span>{{ item }}</span>
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="result matrix">
-                        <strong>Rearrange matrix with numbers on the diagonal not equal to 0:</strong>
-                        {% for row in data.coefficient_adjusted_matrix %}
-                            <div class="row">
-                                {% for item in row %}
-                                    <span>{{ item }}</span>
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="result matrix">
-                        <strong>Solve the matrix using Gaussian elimination:</strong>
-                        {% for row in data.solved_matrix %}
-                            <div class="row">
-                                {% for item in row %}
-                                    <span>{{ item }}</span>
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="result">
-                        <strong>All the coefficients if "{{data.variables[-1].capitalize()}}" equals to 1:</strong>
-                        <p>{{ data.unbalanced_coefficients }}</p>
-                    </div>
-                    <div class="result">
-                        <strong>Balanced:</strong>
-                        <p>{{ data.balanced_coefficients }}</p>
-                    </div>
-                    <div class="result">
-                        <strong>Answer:</strong>
-                        <p>{{ data.answer }}</p>
-                    </div>
-                {% endif %}
-                {% if data.is_combustion %}
-                <div class="result">
-                    <strong>By the way, this reaction is a combustion!</strong>
-                    <p>{{ data.combustion }}</p>
+                    {% endif %}
                 </div>
-                {% endif %}
+            {% else %}
+            <div class="result">
+                <strong>Wrong input, please check if the reaction looks something like "Mg + O2 = MgO"</strong>
             </div>
+            {% endif %}
         {% endif %}
     </div>
 </body>
